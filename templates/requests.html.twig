@@ -1,0 +1,10 @@
+<p>Requests twig template!</p>
+<a href="./requests/new">Create a ticket</a>
+<br>
+<ul class="requests-list">
+    {% for request in requests.requests %}
+      <a href="./requests/{{request.id}}">
+        <li>{{ request.subject|e }}</li>
+      </a>
+    {% endfor %}
+</ul>

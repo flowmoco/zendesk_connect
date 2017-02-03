@@ -1,0 +1,6 @@
+zendesk_connect.settings:
+  title: "Zendesk Connect"
+  parent: system.admin_config_system
+  description: "Zendesk Connect Settings"
+  route_name: zendesk_connect.settings
+  weight: 100

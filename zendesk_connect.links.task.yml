@@ -1,0 +1,5 @@
+zendesk_connect.menu_basic_settings:
+  route_name: zendesk_connect.settings
+  title: 'Settings'
+  base_route: zendesk_connect.settings
+  weight: 0

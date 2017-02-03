@@ -1,0 +1,18 @@
+ul.requests-list {
+  padding: 0px;
+  list-style: none;
+}
+
+ul.requests-list a li {
+  margin: 10px 0px;
+  padding: 10px 0px;
+  border-bottom: 1px solid #bfbfbf;
+}
+
+ul.requests-list a:first-child li {
+  border-top: 1px solid #bfbfbf;
+}
+
+/*ul.requests-list a:last-child li {
+  border-bottom: 0px;
+}*/

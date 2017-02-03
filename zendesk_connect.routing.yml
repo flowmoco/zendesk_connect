@@ -1,0 +1,29 @@
+
+zendesk_connect.requests:
+  path: '/zendesk/requests'
+  defaults:
+    _controller: 'Drupal\zendesk_connect\Controller\ZendeskConnectController::requests'
+  requirements:
+    _permission: 'access content'
+
+zendesk_connect.request:
+  path: '/zendesk/requests/{id}'
+  defaults:
+    _controller: 'Drupal\zendesk_connect\Controller\ZendeskConnectController::request'
+  requirements:
+    _permission: 'access content'
+
+zendesk_connect.request.new:
+  path: '/zendesk/requests/new'
+  defaults:
+    _controller: 'Drupal\zendesk_connect\Controller\ZendeskConnectController::newRequest'
+  requirements:
+    _permission: 'access content'
+
+zendesk_connect.settings:
+  path: '/admin/config/zendesk_connect'
+  defaults:
+    _form: '\Drupal\zendesk_connect\Form\BasicSettingsForm'
+    _title: 'Zendesk Connect Settings'
+  requirements:
+    _permission: 'administer site configuration'

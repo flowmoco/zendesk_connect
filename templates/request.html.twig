@@ -1,0 +1,14 @@
+<h1>Request ID: {{request_id}}</h1>
+
+<p>{{request.request.description}}</p>
+<br>
+
+<ul>
+    {% for comment in comments.comments %}
+      <li>
+        <p>{{ comment.body|e }}</p>
+        <p>Author id: {{ comment.author_id }}</p>
+        <p>Created at {{ comment.created_at }}</p>
+      </li>
+    {% endfor %}
+</ul>
