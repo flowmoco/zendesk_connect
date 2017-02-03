@@ -1,0 +1,20 @@
+{
+    "name": "flowmoco/zendesk_connect",
+    "description": "A Drupal 8 module to allow ZenDesk integration",
+    "type": "drupal-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dale Bailey",
+            "email": "dale@flowmo.co"
+        }, {
+            "name": "Jon Hall",
+            "email": "jon@flowmo.co"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.0",
+        "drupal/core": "^8.2"
+    }
+}
