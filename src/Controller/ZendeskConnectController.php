@@ -28,6 +28,11 @@ class ZendeskConnectController extends ControllerBase {
       '#request_id' => $id,
 			'#request' => $this->getReq($id),
 			'#comments' => $this->getReqCom($id),
+			'#attached' => [
+        'library' => [
+          'zendesk_connect/requests-styles',
+        ]
+      ]
     ];
 	}
 
@@ -40,23 +45,23 @@ class ZendeskConnectController extends ControllerBase {
 	}
 
 	public function getAllReq() {
-		$url = 'https://flowmoco.zendesk.com/api/v2/requests.json';
+		$endpoint = '/api/v2/requests.json';
 	  $check = new ZendeskConnectHttp();
-	  $response = $check->performRequest($url);
+	  $response = $check->performRequest($endpoint);
 		return $response;
 	}
 
 	public function getReq($id) {
-		$url = 'https://flowmoco.zendesk.com/api/v2/requests/' . $id . '.json';
+		$endpoint = '/api/v2/requests/' . $id . '.json';
 	  $check = new ZendeskConnectHttp();
-	  $response = $check->performRequest($url);
+	  $response = $check->performRequest($endpoint);
 		return $response;
 	}
 
 	public function getReqCom($id) {
-		$url = 'https://flowmoco.zendesk.com/api/v2/requests/' . $id . '/comments.json';
+		$endpoint = '/api/v2/requests/' . $id . '/comments.json';
 	  $check = new ZendeskConnectHttp();
-	  $response = $check->performRequest($url);
+	  $response = $check->performRequest($endpoint);
 		return $response;
 	}
 

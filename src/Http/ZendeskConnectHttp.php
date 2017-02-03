@@ -21,13 +21,15 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 class ZendeskConnectHttp {
   use StringTranslationTrait;
 
-  public function performRequest($siteUrl) {
+  public function performRequest($endpoint) {
     $config = \Drupal::service('config.factory')->get('zendesk_connect.settings');
-		$token = $config->get('zendesk_api_token');
+    $domain = $config->get('zendesk_domain');
+    $url = $domain.$endpoint;
+    $token = $config->get('zendesk_api_token');
     $userEmail = $_SESSION['auth0__user_info'][result][email].'/token';
     $client = new \GuzzleHttp\Client();
     try {
-      $res = $client->get($siteUrl, ['http_errors' => false, 'auth' => [$userEmail, $token]]);
+      $res = $client->get($url, ['http_errors' => false, 'auth' => [$userEmail, $token]]);
       return(json_decode($res->getBody()));
     } catch (RequestException $e) {
       return($this->t('Error'));

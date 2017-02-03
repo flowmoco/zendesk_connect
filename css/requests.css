@@ -13,6 +13,29 @@ ul.requests-list a:first-child li {
   border-top: 1px solid #bfbfbf;
 }
 
-/*ul.requests-list a:last-child li {
-  border-bottom: 0px;
+ul.request-comments {
+  padding: 0px;
+  list-style: none;
+}
+
+ul.request-comments li.request-comment {
+  margin: 10px 0px;
+  padding: 10px 0px;
+  border-bottom: 1px solid #bfbfbf;
+}
+
+/*ul.request-comments li.request-comment:nth-child(even) {
+  background-color: #bfbfbf;
 }*/
+
+ul.request-comments li.request-comment:first-child {
+  border-top: 1px solid #bfbfbf;
+}
+
+ul.request-comments li.request-comment .comment-body {
+  font-size: 1.25em;
+}
+
+ul.request-comments li.request-comment .comment-meta {
+  background-color: #E0EAF1;
+}

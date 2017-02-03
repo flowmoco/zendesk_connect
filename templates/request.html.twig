@@ -3,12 +3,15 @@
 <p>{{request.request.description}}</p>
 <br>
 
-<ul>
+<ul class="request-comments">
     {% for comment in comments.comments %}
-      <li>
-        <p>{{ comment.body|e }}</p>
-        <p>Author id: {{ comment.author_id }}</p>
-        <p>Created at {{ comment.created_at }}</p>
+      <li class="request-comment">
+        <div class="comment-body">
+          <p>{{ comment.body|e }}</p>
+        </div>
+        <div class="comment-meta">
+          <p>Said {{ comment.author_id }} on {{ comment.created_at }}</p>
+        </div>
       </li>
     {% endfor %}
 </ul>

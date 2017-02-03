@@ -8,9 +8,9 @@ Go to settings and insert your zendesk api token.
 
 Endpoints are:
 
-* /zendesk/requests - lists all requests for the user
-* /zendesk/requests/{{id}} = displays a specific request by id (use to link from above)
-* /zendesk/requests/new - starting a new request
+* "/zendesk/requests" - lists all requests for the user
+* "/zendesk/requests/{{id}}" = displays a specific request by id (use to link from above)
+* "/zendesk/requests/new" - starting a new request
 
 
 Currently this works by taking a Zendesk api token and combining it with the logged in users email address, hopefully a way using jwt will be used in the near future.
