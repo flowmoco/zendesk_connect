@@ -31,12 +31,14 @@ class ZendeskConnectController extends ControllerBase {
   }
 
   public function request($id) {
+    $form = \Drupal::formBuilder()->getForm('Drupal\zendesk_connect\Form\RequestCommentForm', $id);
     return [
       '#theme' => 'request',
       '#title' => $this->getReq($id)->request->subject,
       '#request_id' => $id,
       '#request' => $this->getReq($id),
       '#comments' => $this->getReqCom($id),
+      '#form' => $form,
       '#attached' => [
         'library' => [
           'zendesk_connect/requests-styles',

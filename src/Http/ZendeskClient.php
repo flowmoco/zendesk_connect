@@ -73,4 +73,18 @@ class ZendeskClient {
     }
   }
 
+  public function performPutRequest($endpoint, $postData) {
+    $url = $this->domain . $endpoint;
+    $email = $this->account->getEmail();
+    try {
+      $result = $this->client->put(
+        $url,
+        ['http_errors' => FALSE, 'auth' => [$email . '/token', $this->token], 'json' => $postData]
+      );
+      return (json_decode($result->getBody()));
+    } catch (RequestException $e) {
+      return $this->t('Error');
+    }
+  }
+
 }
