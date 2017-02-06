@@ -46,15 +46,15 @@ class ZendeskConnectController extends ControllerBase {
   }
 
   public function getAllReq() {
-    return $this->zendeskClient->performRequest('/api/v2/requests.json');
+    return $this->zendeskClient->performGetRequest('/api/v2/requests.json');
   }
 
   public function getReq($id) {
-    return $this->zendeskClient->performRequest("/api/v2/requests/{$id}.json");
+    return $this->zendeskClient->performGetRequest("/api/v2/requests/{$id}.json");
   }
 
   public function getReqCom($id) {
-    return $this->zendeskClient->performRequest("/api/v2/requests/{$id}/comments.json");
+    return $this->zendeskClient->performGetRequest("/api/v2/requests/{$id}/comments.json");
   }
 
   public function userData() {

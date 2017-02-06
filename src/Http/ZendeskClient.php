@@ -45,13 +45,27 @@ class ZendeskClient {
     $this->account = $account;
   }
 
-  public function performRequest($endpoint) {
+  public function performGetRequest($endpoint) {
     $url = $this->domain . $endpoint;
     $email = $this->account->getEmail();
     try {
       $result = $this->client->get(
         $url,
         ['http_errors' => FALSE, 'auth' => [$email . '/token', $this->token]]
+      );
+      return (json_decode($result->getBody()));
+    } catch (RequestException $e) {
+      return $this->t('Error');
+    }
+  }
+
+  public function performPostRequest($endpoint, $postData) {
+    $url = $this->domain . $endpoint;
+    $email = $this->account->getEmail();
+    try {
+      $result = $this->client->post(
+        $url,
+        ['http_errors' => FALSE, 'auth' => [$email . '/token', $this->token], 'json' => $postData]
       );
       return (json_decode($result->getBody()));
     } catch (RequestException $e) {
