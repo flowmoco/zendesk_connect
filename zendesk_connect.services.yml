@@ -1,0 +1,7 @@
+services:
+  zendesk_connect.client:
+    class: Drupal\zendesk_connect\Http\ZendeskClient
+    arguments:
+      - '@http_client'
+      - '@config.factory'
+      - '@current_user'
