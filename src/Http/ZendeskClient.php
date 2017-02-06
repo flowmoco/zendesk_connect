@@ -48,11 +48,10 @@ class ZendeskClient {
   public function performRequest($endpoint) {
     $url = $this->domain . $endpoint;
     $email = $this->account->getEmail();
-
     try {
       $result = $this->client->get(
         $url,
-        ['http_errors' => FALSE, 'auth' => [$email, $this->token]]
+        ['http_errors' => FALSE, 'auth' => [$email . '/token', $this->token]]
       );
       return (json_decode($result->getBody()));
     } catch (RequestException $e) {
