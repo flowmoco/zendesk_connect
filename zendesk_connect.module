@@ -14,9 +14,5 @@ function zendesk_connect_theme($existing, $type, $theme, $path) {
         'comments' => NULL,
       ),
     ),
-    'new_request' => array(
-      'variables' => array(
-      ),
-    ),
   );
 }

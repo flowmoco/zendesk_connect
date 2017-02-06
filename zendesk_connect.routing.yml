@@ -13,13 +13,6 @@ zendesk_connect.request:
   requirements:
     _permission: 'access content'
 
-zendesk_connect.request.new:
-  path: '/zendesk/requests/new'
-  defaults:
-    _controller: 'Drupal\zendesk_connect\Controller\ZendeskConnectController::newRequest'
-  requirements:
-    _permission: 'access content'
-
 zendesk_connect.settings:
   path: '/admin/config/zendesk_connect'
   defaults:

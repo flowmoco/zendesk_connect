@@ -45,13 +45,6 @@ class ZendeskConnectController extends ControllerBase {
     ];
   }
 
-  public function newRequest() {
-    return [
-      '#theme' => 'new_request',
-      '#title' => 'New Request',
-    ];
-  }
-
   public function getAllReq() {
     return $this->zendeskClient->performRequest('/api/v2/requests.json');
   }

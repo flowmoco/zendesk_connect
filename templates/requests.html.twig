@@ -3,7 +3,7 @@
 <br>
 <ul class="requests-list">
     {% for request in requests.requests %}
-      <a href="{{ path('zendesk_connect.request.new', { id: request.id }) }}">
+      <a href="{{ path('zendesk_connect.request', { id: request.id }) }}">
         <li>{{ request.subject|e }}</li>
       </a>
     {% endfor %}
