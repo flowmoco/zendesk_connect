@@ -12,6 +12,7 @@ function zendesk_connect_theme($existing, $type, $theme, $path) {
         'request_id' => NULL,
         'request' => NULL,
         'comments' => NULL,
+        'commentAuthors' => NULL,
         'form' => NULL,
       ),
     ),
