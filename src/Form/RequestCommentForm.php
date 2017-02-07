@@ -8,8 +8,8 @@ namespace Drupal\zendesk_connect\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\zendesk_connect\Http\ZendeskClient;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Zendesk\API\HttpClient;
 
 /**
  * This forms handles the basic module configurations.
@@ -17,12 +17,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class RequestCommentForm extends FormBase {
 
   /**
-   * @var \Drupal\zendesk_connect\Http\ZendeskClient
+   * @var \Zendesk\API\HttpClient
    */
   private $zendeskClient;
 
-
-  public function __construct(ZendeskClient $zendeskClient) {
+  public function __construct(HttpClient $zendeskClient) {
     $this->zendeskClient = $zendeskClient;
   }
 
@@ -30,9 +29,9 @@ class RequestCommentForm extends FormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-      $zendeskClient = $container->get('zendesk_connect.client');
+    $zendeskClient = $container->get('zendesk_connect.client.current_user');
 
-      return new static($zendeskClient);
+    return new static($zendeskClient);
   }
 
   /**
@@ -45,24 +44,28 @@ class RequestCommentForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $id = NULL) {
+  public function buildForm(
+    array $form,
+    FormStateInterface $form_state,
+    $id = NULL
+  ) {
 
     $form_state->set('zendesk_connect_request_id', $id);
 
-    $form['request_comment_body'] = array(
+    $form['request_comment_body'] = [
       '#type' => 'textarea',
-      '#title' => t('Comment'),
+      '#title' => $this->t('Comment'),
       '#default_value' => '',
-      '#description' => t('Enter a comment'),
+      '#description' => $this->t('Enter a comment'),
       '#required' => TRUE,
-    );
+    ];
 
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Comment'),
       '#button_type' => 'primary',
-    );
+    ];
     return $form;
   }
 
@@ -71,7 +74,10 @@ class RequestCommentForm extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     if (empty($form_state->getValue('request_comment_body'))) {
-      $form_state->setErrorByName('request_comment_body', $this->t('Please enter a comment'));
+      $form_state->setErrorByName(
+        'request_comment_body',
+        $this->t('Please enter a comment')
+      );
     }
   }
 
@@ -80,14 +86,14 @@ class RequestCommentForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $id = $form_state->get('zendesk_connect_request_id');
-    $postData = array(
+    $postData = [
       'request' => [
         'comment' => [
-          'body' => $form_state->getValue('request_comment_body')
-        ]
-      ]
-    );
-    $response = $this->zendeskClient->performPutRequest('/api/v2/requests/' . $id . '.json', $postData);
+          'body' => $form_state->getValue('request_comment_body'),
+        ],
+      ],
+    ];
+    $response = $this->zendeskClient->requests()->update($id, $postData);
     echo json_encode($response);
   }
 

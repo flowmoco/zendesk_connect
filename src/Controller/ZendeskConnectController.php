@@ -3,25 +3,28 @@
 namespace Drupal\zendesk_connect\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\zendesk_connect\Http\ZendeskClient;
+use Drupal\zendesk_connect\Form\RequestCommentForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Zendesk\API\HttpClient;
 
 class ZendeskConnectController extends ControllerBase {
 
   /**
-   * @var \Drupal\zendesk_connect\Http\ZendeskClient
+   * @var \Zendesk\API\HttpClient
    */
-  private $zendeskClient;
+  private $client;
 
-  public function __construct(ZendeskClient $zendeskClient) {
-    $this->zendeskClient = $zendeskClient;
+  public function __construct(HttpClient $client) {
+    $this->client = $client;
   }
 
   public function requests() {
+    $requests = $this->client->requests()->findAll();
+
     return [
       '#theme' => 'requests',
       '#title' => 'Requests page',
-      '#requests' => $this->getAllReq(),
+      '#requests' => $requests,
       '#attached' => [
         'library' => [
           'zendesk_connect/requests-styles',
@@ -30,17 +33,18 @@ class ZendeskConnectController extends ControllerBase {
     ];
   }
 
-  public function request($id) {
-    $form = \Drupal::formBuilder()->getForm('Drupal\zendesk_connect\Form\RequestCommentForm', $id);
-    $request = $this->getReq($id);
-    $requestComments = $this->getReqCom($id);
+  public function request(int $id) {
+    $form = \Drupal::formBuilder()->getForm(RequestCommentForm::class, $id);
+    $request = $this->client->requests()->find($id);
+    $commentsResponse = $this->client->requests()->comments()->sideload(['users'])->find($id);
+
     return [
       '#theme' => 'request',
       '#title' => $request->request->subject,
       '#request_id' => $id,
       '#request' => $request,
-      '#comments' => $requestComments->comments,
-      '#commentAuthors' => $requestComments->users,
+      '#comments' => $commentsResponse->comments,
+      '#commentAuthors' => $commentsResponse->users,
       '#form' => $form,
       '#attached' => [
         'library' => [
@@ -50,49 +54,10 @@ class ZendeskConnectController extends ControllerBase {
     ];
   }
 
-  public function getAllReq() {
-    return $this->zendeskClient->performGetRequest('/api/v2/requests.json');
-  }
-
-  public function getReq($id) {
-    return $this->zendeskClient->performGetRequest("/api/v2/requests/{$id}.json");
-  }
-
-  public function getReqCom($id) {
-    return $this->zendeskClient->performGetRequest("/api/v2/requests/{$id}/comments.json");
-  }
-
-  public function userData() {
-    if ($_SESSION['auth0__user_info']) {
-      return json_encode($_SESSION['auth0__user_info']);
-    }
-    else {
-      return NULL;
-    }
-  }
-
-  public function accessToken() {
-    if ($_SESSION['auth0__access_token']) {
-      return $_SESSION['auth0__access_token'];
-    }
-    else {
-      return NULL;
-    }
-  }
-
-  public function idToken() {
-    if ($_SESSION['auth0__id_token']) {
-      return $_SESSION['auth0__id_token'];
-    }
-    else {
-      return NULL;
-    }
-  }
-
   public static function create(ContainerInterface $container) {
-    $zendeskClient = $container->get('zendesk_connect.client');
+    $client = $container->get('zendesk_connect.client.current_user');
 
-    return new static($zendeskClient);
+    return new static($client);
   }
 
 }

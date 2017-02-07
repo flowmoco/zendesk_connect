@@ -1,7 +1,21 @@
 services:
-  zendesk_connect.client:
-    class: Drupal\zendesk_connect\Http\ZendeskClient
+
+  zendesk_connect.settings:
+    class: Drupal\Core\Config\ImmutableConfig
+    factory: ['@config.factory', 'get']
+    arguments: ['zendesk_connect.settings']
+
+  zendesk_connect.client_factory:
+    class: Drupal\zendesk_connect\Http\ClientFactory
     arguments:
-      - '@http_client'
-      - '@config.factory'
+      - '@zendesk_connect.settings'
+
+  zendesk_connect.current_user_client_factory:
+    class: Drupal\zendesk_connect\Http\CurrentUserClientFactory
+    arguments:
+      - '@zendesk_connect.client_factory'
       - '@current_user'
+
+  zendesk_connect.client.current_user:
+    class: Zendesk\API\HttpClient
+    factory: ['@zendesk_connect.current_user_client_factory', 'get']

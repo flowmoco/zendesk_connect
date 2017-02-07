@@ -30,9 +30,9 @@ class BasicSettingsForm extends FormBase {
 
     $form['zendesk_domain'] = array(
       '#type' => 'textfield',
-      '#title' => t('Zendesk domain'),
+      '#title' => t('Zendesk sub-domain'),
       '#default_value' => $config->get('zendesk_domain', ''),
-      '#description' => t('Your Zendesk domain'),
+      '#description' => t('Your Zendesk sub-domain'),
       '#required' => TRUE,
     );
 
@@ -62,16 +62,12 @@ class BasicSettingsForm extends FormBase {
       $form_state->setErrorByName('zendesk_domain', $this->t('Please enter your Zendesk domain'));
     }
 
-    if (!$this->startsWith($form_state->getValue('zendesk_domain'), 'https://')) {
-      $form_state->setErrorByName('zendesk_domain', $this->t('Domain must start with "https://"'));
+    if ($this->startsWith($form_state->getValue('zendesk_domain'), 'https://')) {
+      $form_state->setErrorByName('zendesk_domain', $this->t('Please only use the sub-domain; remove the "https://" from the start.'));
     }
 
-    if ($this->endsWith($form_state->getValue('zendesk_domain'), '/')) {
-      $form_state->setErrorByName('zendesk_domain', $this->t('Domain must not end with "/"'));
-    }
-
-    if (!$this->endsWith($form_state->getValue('zendesk_domain'), '.zendesk.com')) {
-      $form_state->setErrorByName('zendesk_domain', $this->t('Domain must end with ".zendesk.com"'));
+    if ($this->endsWith($form_state->getValue('zendesk_domain'), '.zendesk.com')) {
+      $form_state->setErrorByName('zendesk_domain', $this->t('Please only use the sub-domain; remove ".zendesk.com" from the end.'));
     }
 
     if (empty($form_state->getValue('zendesk_api_token'))) {
