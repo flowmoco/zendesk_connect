@@ -15,6 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": "^7.0",
-        "drupal/core": "^8.2"
+        "drupal/core": "^8.2",
+        "zendesk/zendesk_api_client_php": "^2.1"
     }
 }
