@@ -35,8 +35,8 @@ class ZendeskConnectController extends ControllerBase {
 
   public function request(int $id) {
     $form = \Drupal::formBuilder()->getForm(RequestCommentForm::class, $id);
-    $request = $this->client->requests()->find($id);
-    $commentsResponse = $this->client->requests()->comments()->sideload(['users'])->find($id);
+    $request = $this->client->requests($id)->find();
+    $commentsResponse = $this->client->requests($id)->comments()->findAll();
 
     return [
       '#theme' => 'request',
