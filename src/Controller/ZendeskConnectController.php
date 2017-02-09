@@ -37,6 +37,10 @@ class ZendeskConnectController extends ControllerBase {
     $form = \Drupal::formBuilder()->getForm(RequestCommentForm::class, $id);
     $request = $this->client->requests($id)->find();
     $commentsResponse = $this->client->requests($id)->comments()->findAll();
+    $commentAuthors = [];
+    foreach ($commentsResponse->users as $author) {
+      $commentAuthors[$author->id] = $author;
+    }
 
     return [
       '#theme' => 'request',
@@ -44,7 +48,7 @@ class ZendeskConnectController extends ControllerBase {
       '#request_id' => $id,
       '#request' => $request,
       '#comments' => $commentsResponse->comments,
-      '#commentAuthors' => $commentsResponse->users,
+      '#commentAuthors' => $commentAuthors,
       '#form' => $form,
       '#attached' => [
         'library' => [

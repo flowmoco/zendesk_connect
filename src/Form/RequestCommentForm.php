@@ -57,6 +57,7 @@ class RequestCommentForm extends FormBase {
       '#title' => $this->t('Comment'),
       '#default_value' => '',
       '#description' => $this->t('Enter a comment'),
+      '#description_display' => 'invisible',
       '#required' => TRUE,
     ];
 
@@ -87,10 +88,8 @@ class RequestCommentForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $id = $form_state->get('zendesk_connect_request_id');
     $postData = [
-      'request' => [
-        'comment' => [
-          'body' => $form_state->getValue('request_comment_body'),
-        ],
+      'comment' => [
+        'body' => $form_state->getValue('request_comment_body'),
       ],
     ];
     $response = $this->zendeskClient->requests()->update($id, $postData);

@@ -15,14 +15,4 @@
     {% endfor %}
 </ul>
 
-<ul class="request-comments">
-    {% for author in commentAuthors %}
-      <li class="request-comment">
-        <div class="comment-body">
-          <p>{{ author.name|e }}</p>
-        </div>
-      </li>
-    {% endfor %}
-</ul>
-
 {{ form }}
