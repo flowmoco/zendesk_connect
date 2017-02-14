@@ -1,4 +1,4 @@
-<a href="{{ path('zendesk_connect.request.new') }}"><button class="" type="button" name="button">Create a ticket</button></a>
+<a href="{{ path('zendesk_connect.request.new', { destination: path('zendesk_connect.requests') }) }}"><button class="" type="button" name="button">Create a ticket</button></a>
 <br>
 <ul class="requests-list">
     {% for request in requests.requests %}
