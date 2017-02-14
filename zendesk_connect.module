@@ -20,7 +20,6 @@ function zendesk_connect_theme($existing, $type, $theme, $path) {
 }
 
 function zendesk_connect_user_insert(\Drupal\user\Entity\User $user) {
-  echo $user->getEmail();
 
   $config = \Drupal::service('zendesk_connect.settings');
 
@@ -33,5 +32,4 @@ function zendesk_connect_user_insert(\Drupal\user\Entity\User $user) {
   ];
 
   $response = $client->users()->create($postData);
-  echo $response;
 }

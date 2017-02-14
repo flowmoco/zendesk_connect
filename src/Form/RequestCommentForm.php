@@ -95,8 +95,6 @@ class RequestCommentForm extends FormBase {
     $files = $form_state->getValue('request_comment_file');
 
     if ($files) {
-      echo 'file detected';
-      return;
       $token = NULL;
       foreach ($files as $file) {
         if (!$token) {
@@ -114,17 +112,13 @@ class RequestCommentForm extends FormBase {
         ],
       ];
       $response = $this->zendeskClient->requests()->update($id, $postData);
-      echo json_encode($response);
     } else {
-      echo 'file not detected';
-      return;
       $postData = [
         'comment' => [
           'body' => $form_state->getValue('request_comment_body'),
         ],
       ];
       $response = $this->zendeskClient->requests()->update($id, $postData);
-      echo json_encode($response);
     }
 
   }
