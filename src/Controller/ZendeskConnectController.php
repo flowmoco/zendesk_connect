@@ -30,6 +30,9 @@ class ZendeskConnectController extends ControllerBase {
           'zendesk_connect/requests-styles',
         ],
       ],
+      '#cache' => [
+        'max-age' => 0,
+      ],
     ];
   }
 
@@ -54,6 +57,9 @@ class ZendeskConnectController extends ControllerBase {
         'library' => [
           'zendesk_connect/requests-styles',
         ],
+      ],
+      '#cache' => [
+        'max-age' => 0,
       ],
     ];
   }
