@@ -23,7 +23,7 @@ class ZendeskConnectController extends ControllerBase {
 
     return [
       '#theme' => 'requests',
-      '#title' => 'Requests page',
+      '#title' => 'My Consultations',
       '#requests' => $requests,
       '#attached' => [
         'library' => [
@@ -37,7 +37,7 @@ class ZendeskConnectController extends ControllerBase {
   }
 
   public function request(int $id) {
-    $form = \Drupal::formBuilder()->getForm(RequestCommentForm::class, $id);
+    $form = $this->formBuilder()->getForm(RequestCommentForm::class, $id);
     $request = $this->client->requests($id)->find();
     $commentsResponse = $this->client->requests($id)->comments()->findAll();
     $commentAuthors = [];

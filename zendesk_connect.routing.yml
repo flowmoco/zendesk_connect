@@ -1,13 +1,13 @@
 
 zendesk_connect.requests:
-  path: '/zendesk/requests'
+  path: '/zendesk/consultations'
   defaults:
     _controller: '\Drupal\zendesk_connect\Controller\ZendeskConnectController::requests'
   requirements:
     _permission: 'access content'
 
 zendesk_connect.request:
-  path: '/zendesk/requests/{id}'
+  path: '/zendesk/consultations/{id}'
   defaults:
     _controller: '\Drupal\zendesk_connect\Controller\ZendeskConnectController::request'
   requirements:
