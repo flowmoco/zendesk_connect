@@ -25,31 +25,53 @@ class BasicSettingsForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-
+    /** @var \Drupal\Core\Config\ImmutableConfig $config */
     $config = \Drupal::service('config.factory')->get('zendesk_connect.settings');
 
-    $form['zendesk_domain'] = array(
+    $form['zendesk_domain'] = [
       '#type' => 'textfield',
-      '#title' => t('Zendesk sub-domain'),
-      '#default_value' => $config->get('zendesk_domain', ''),
-      '#description' => t('Your Zendesk sub-domain'),
+      '#title' => $this->t('Zendesk sub-domain'),
+      '#default_value' => $config->get('zendesk_domain'),
+      '#description' => $this->t('Your Zendesk sub-domain'),
       '#required' => TRUE,
-    );
+    ];
 
-    $form['zendesk_api_token'] = array(
+    $form['zendesk_api_token'] = [
       '#type' => 'textfield',
-      '#title' => t('Zendesk API Token'),
-      '#default_value' => $config->get('zendesk_api_token', ''),
-      '#description' => t('API Token, copy from the zendesk dashboard under api settings.'),
+      '#title' => $this->t('Zendesk API Token'),
+      '#default_value' => $config->get('zendesk_api_token'),
+      '#description' => $this->t('API Token, copy from the zendesk dashboard under api settings.'),
       '#required' => TRUE,
-    );
+    ];
+
+    $form['oauth'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('OAuth'),
+    ];
+
+    $form['oauth']['zendesk_connect.oauth.client_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Client id'),
+      '#default_value' => $config->get('zendesk_connect.oauth.client_id'),
+      '#description' => $this->t('OAuth client secret - copy from the zendesk dashboard.'),
+      '#required' => TRUE,
+    ];
+
+    $form['oauth']['zendesk_connect.oauth.client_secret'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Client secret'),
+      '#default_value' => $config->get('zendesk_connect.oauth.client_secret'),
+      '#description' => $this->t('OAuth client secret - copy from the zendesk dashboard.'),
+      '#required' => TRUE,
+    ];
 
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
       '#button_type' => 'primary',
-    );
+    ];
+
     return $form;
 
   }
@@ -83,7 +105,7 @@ class BasicSettingsForm extends FormBase {
   private function endsWith($haystack, $needle) {
     $length = strlen($needle);
     if ($length == 0) {
-      return true;
+      return TRUE;
     }
     return (substr($haystack, -$length) === $needle);
   }
@@ -95,8 +117,8 @@ class BasicSettingsForm extends FormBase {
 
     $config = \Drupal::service('config.factory')->getEditable('zendesk_connect.settings');
     $config->set('zendesk_domain', $form_state->getValue('zendesk_domain'))
-            ->set('zendesk_api_token', $form_state->getValue('zendesk_api_token'))
-            ->save();
+      ->set('zendesk_api_token', $form_state->getValue('zendesk_api_token'))
+      ->save();
   }
 
 }

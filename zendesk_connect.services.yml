@@ -19,3 +19,12 @@ services:
   zendesk_connect.client.current_user:
     class: Zendesk\API\HttpClient
     factory: ['@zendesk_connect.current_user_client_factory', 'get']
+
+  zendesk_connect.oauth_client_factory:
+    class: Drupal\zendesk_connect\Http\OauthClientFactory
+    arguments:
+      - '@zendesk_connect.settings'
+
+  zendesk_connect.oauth_client:
+    class: Stevenmaguire\OAuth2\Client\Provider\Zendesk
+    factory: ['@zendesk_connect.oauth_client_factory', 'get']
