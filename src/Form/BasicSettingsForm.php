@@ -44,6 +44,14 @@ class BasicSettingsForm extends FormBase {
       '#required' => TRUE,
     );
 
+    $form['zendesk_admin_email'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Zendesk Admin Email'),
+      '#default_value' => $config->get('zendesk_admin_email', ''),
+      '#description' => t('An admin email to create zendesk users on registration'),
+      '#required' => TRUE,
+    );
+
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = array(
       '#type' => 'submit',
@@ -96,6 +104,7 @@ class BasicSettingsForm extends FormBase {
     $config = \Drupal::service('config.factory')->getEditable('zendesk_connect.settings');
     $config->set('zendesk_domain', $form_state->getValue('zendesk_domain'))
             ->set('zendesk_api_token', $form_state->getValue('zendesk_api_token'))
+            ->set('zendesk_admin_email', $form_state->getValue('zendesk_admin_email'))
             ->save();
   }
 

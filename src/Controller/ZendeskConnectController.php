@@ -19,7 +19,7 @@ class ZendeskConnectController extends ControllerBase {
   }
 
   public function requests() {
-    $requests = $this->client->requests()->findAll();
+    $requests = $this->client->requests()->findAll(['sort_by' => 'updated_at']);
 
     return [
       '#theme' => 'requests',

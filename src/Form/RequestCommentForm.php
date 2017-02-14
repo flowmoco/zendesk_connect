@@ -61,6 +61,11 @@ class RequestCommentForm extends FormBase {
       '#required' => TRUE,
     ];
 
+    $form['request_comment_file'] = array(
+      '#type' => 'file',
+      '#description' => t('Upload a file, allowed extensions: jpg, jpeg, png, gif'),
+    );
+
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = [
       '#type' => 'submit',
@@ -87,13 +92,41 @@ class RequestCommentForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $id = $form_state->get('zendesk_connect_request_id');
-    $postData = [
-      'comment' => [
-        'body' => $form_state->getValue('request_comment_body'),
-      ],
-    ];
-    $response = $this->zendeskClient->requests()->update($id, $postData);
-    echo json_encode($response);
+    $files = $form_state->getValue('request_comment_file');
+
+    if ($files) {
+      echo 'file detected';
+      return;
+      $token = NULL;
+      foreach ($files as $file) {
+        if (!$token) {
+          $fileResponse = $this->zendeskClient->attachments()->upload($files);
+          $token = $fileResponse->upload->token;
+        } else {
+          $files->token = $token;
+          $fileResponse = $this->zendeskClient->attachments()->upload($files);
+        }
+      }
+      $postData = [
+        'comment' => [
+          'body' => $form_state->getValue('request_comment_body'),
+          "uploads" => $files,
+        ],
+      ];
+      $response = $this->zendeskClient->requests()->update($id, $postData);
+      echo json_encode($response);
+    } else {
+      echo 'file not detected';
+      return;
+      $postData = [
+        'comment' => [
+          'body' => $form_state->getValue('request_comment_body'),
+        ],
+      ];
+      $response = $this->zendeskClient->requests()->update($id, $postData);
+      echo json_encode($response);
+    }
+
   }
 
 }

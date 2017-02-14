@@ -18,3 +18,20 @@ function zendesk_connect_theme($existing, $type, $theme, $path) {
     ),
   );
 }
+
+function zendesk_connect_user_insert(\Drupal\user\Entity\User $user) {
+  echo $user->getEmail();
+
+  $config = \Drupal::service('zendesk_connect.settings');
+
+  $client = \Drupal::service('zendesk_connect.client_factory')->get($config->get('zendesk_admin_email'));
+
+  $postData = [
+    'name' => $user->getEmail(),
+    'email' => $user->getEmail(),
+    "verified" => TRUE,
+  ];
+
+  $response = $client->users()->create($postData);
+  echo $response;
+}
