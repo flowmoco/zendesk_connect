@@ -95,10 +95,6 @@ class RequestCommentForm extends FormBase {
     $files = $form_state->getValue('request_comment_file');
 
     if ($files) {
-<<<<<<< HEAD
-=======
-      return;
->>>>>>> b90cdc45d068153023469fe4dac15e972c40d22c
       $token = NULL;
       foreach ($files as $file) {
         if (!$token) {
@@ -117,10 +113,6 @@ class RequestCommentForm extends FormBase {
       ];
       $response = $this->zendeskClient->requests()->update($id, $postData);
     } else {
-<<<<<<< HEAD
-=======
-      return;
->>>>>>> b90cdc45d068153023469fe4dac15e972c40d22c
       $postData = [
         'comment' => [
           'body' => $form_state->getValue('request_comment_body'),

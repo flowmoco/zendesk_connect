@@ -20,10 +20,6 @@ function zendesk_connect_theme($existing, $type, $theme, $path) {
 }
 
 function zendesk_connect_user_insert(\Drupal\user\Entity\User $user) {
-<<<<<<< HEAD
-
-=======
->>>>>>> b90cdc45d068153023469fe4dac15e972c40d22c
   $config = \Drupal::service('zendesk_connect.settings');
   $client = \Drupal::service('zendesk_connect.client_factory')->get($config->get('zendesk_admin_email'));
 
@@ -33,9 +29,5 @@ function zendesk_connect_user_insert(\Drupal\user\Entity\User $user) {
     "verified" => TRUE,
   ];
 
-<<<<<<< HEAD
-  $response = $client->users()->create($postData);
-=======
   $client->users()->create($postData);
->>>>>>> b90cdc45d068153023469fe4dac15e972c40d22c
 }
