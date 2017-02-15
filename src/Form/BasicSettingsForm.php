@@ -45,6 +45,14 @@ class BasicSettingsForm extends FormBase {
       '#required' => TRUE,
     ];
 
+    $form['zendesk_admin_email'] = [
+      '#type' => 'textfield',
+      '#title' => t('Zendesk Admin Email'),
+      '#default_value' => $config->get('zendesk_admin_email', ''),
+      '#description' => t('An admin email to create zendesk users on registration'),
+      '#required' => TRUE,
+    ];
+
     $form['oauth'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('OAuth'),
@@ -66,13 +74,13 @@ class BasicSettingsForm extends FormBase {
       '#required' => TRUE,
     ];
 
-    $form['zendesk_admin_email'] = array(
+    $form['oauth']['zendesk_connect.oauth.client_secret'] = [
       '#type' => 'textfield',
-      '#title' => t('Zendesk Admin Email'),
-      '#default_value' => $config->get('zendesk_admin_email', ''),
-      '#description' => t('An admin email to create zendesk users on registration'),
+      '#title' => $this->t('Client secret'),
+      '#default_value' => $config->get('zendesk_connect.oauth.client_secret'),
+      '#description' => $this->t('OAuth client secret - copy from the zendesk dashboard.'),
       '#required' => TRUE,
-    );
+    ];
 
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = [
