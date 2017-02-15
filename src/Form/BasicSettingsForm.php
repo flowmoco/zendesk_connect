@@ -58,23 +58,15 @@ class BasicSettingsForm extends FormBase {
       '#title' => $this->t('OAuth'),
     ];
 
-    $form['oauth']['zendesk_connect.oauth.client_id'] = [
+    $form['oauth']['zendesk_connect_oauth_client_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Client id'),
       '#default_value' => $config->get('zendesk_connect.oauth.client_id'),
-      '#description' => $this->t('OAuth client secret - copy from the zendesk dashboard.'),
+      '#description' => $this->t('OAuth client id - copy from the zendesk dashboard.'),
       '#required' => TRUE,
     ];
 
-    $form['oauth']['zendesk_connect.oauth.client_secret'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Client secret'),
-      '#default_value' => $config->get('zendesk_connect.oauth.client_secret'),
-      '#description' => $this->t('OAuth client secret - copy from the zendesk dashboard.'),
-      '#required' => TRUE,
-    ];
-
-    $form['oauth']['zendesk_connect.oauth.client_secret'] = [
+    $form['oauth']['zendesk_connect_oauth_client_secret'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Client secret'),
       '#default_value' => $config->get('zendesk_connect.oauth.client_secret'),
@@ -90,7 +82,6 @@ class BasicSettingsForm extends FormBase {
     ];
 
     return $form;
-
   }
 
   /**
@@ -131,13 +122,14 @@ class BasicSettingsForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
     /** @var \Drupal\Core\Config\Config $config */
     $config = \Drupal::service('config.factory')->getEditable('zendesk_connect.settings');
     $config
       ->set('zendesk_domain', $form_state->getValue('zendesk_domain'))
       ->set('zendesk_api_token', $form_state->getValue('zendesk_api_token'))
       ->set('zendesk_admin_email', $form_state->getValue('zendesk_admin_email'))
+      ->set('zendesk_connect.oauth.client_id', $form_state->getValue('zendesk_connect_oauth_client_id'))
+      ->set('zendesk_connect.oauth.client_secret', $form_state->getValue('zendesk_connect_oauth_client_secret'))
       ->save();
   }
 
