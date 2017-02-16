@@ -21,9 +21,16 @@ zendesk_connect.settings:
   requirements:
     _permission: 'administer site configuration'
 
+zendesk_connect.oauth.begin:
+  path: '/zendesk/oauth/begin'
+  defaults:
+    _controller: 'Drupal\zendesk_connect\Controller\OAuthController::beginAuthorization'
+  requirements:
+    _user_is_logged_in: 'FALSE'
+
 zendesk_connect.oauth.redirect:
   path: '/zendesk/oauth/redirect'
   defaults:
     _controller: 'Drupal\zendesk_connect\Controller\OAuthController::redirectEndpoint'
   requirements:
-    _permission: 'administer site configuration'
+    _user_is_logged_in: 'FALSE'
