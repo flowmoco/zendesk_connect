@@ -61,10 +61,12 @@ class RequestCommentForm extends FormBase {
       '#required' => TRUE,
     ];
 
-    $form['request_comment_file'] = array(
-      '#type' => 'file',
-      '#description' => t('Upload a file, allowed extensions: jpg, jpeg, png, gif'),
-    );
+//    $form['request_comment_file'] = array(
+//      '#type' => 'managed_file',
+//      '#description' => t('Upload a file, allowed extensions: jpg, jpeg, png, gif'),
+//      '#multiple' => TRUE,
+//      '#upload_location' => 'temporary://zendesk_uploads/',
+//    );
 
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = [
@@ -112,6 +114,11 @@ class RequestCommentForm extends FormBase {
         ],
       ];
       $response = $this->zendeskClient->requests()->update($id, $postData);
+      if ($response) {
+        drupal_set_message(t('Your comment has been submitted.'), 'status');
+      } else {
+        drupal_set_message(t('There was a problem submitting your message, please try again.'), 'error');
+      }
     } else {
       $postData = [
         'comment' => [
@@ -119,6 +126,11 @@ class RequestCommentForm extends FormBase {
         ],
       ];
       $response = $this->zendeskClient->requests()->update($id, $postData);
+      if ($response) {
+        drupal_set_message(t('Your comment has been submitted.'), 'status');
+      } else {
+        drupal_set_message(t('There was a problem submitting your message, please try again.'), 'error');
+      }
     }
 
   }
