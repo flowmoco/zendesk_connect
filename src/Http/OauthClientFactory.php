@@ -30,8 +30,8 @@ class OauthClientFactory {
 
   public function __construct(ImmutableConfig $config) {
     $this->subDomain = $config->get('zendesk_domain');
-    $this->clientId = $config->get('zendesk_connect.oauth.client_id');
-    $this->clientSecret = $config->get('zendesk_connect.oauth.client_secret');
+    $this->clientId = $config->get('oauth.client_id');
+    $this->clientSecret = $config->get('oauth.client_secret');
     $this->redirectUri = Url::fromRoute('zendesk_connect.oauth.redirect')
       ->setAbsolute(true)
       ->toString();
