@@ -9,6 +9,7 @@ namespace Drupal\zendesk_connect\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Zendesk\API\Utilities\Auth;
 
 /**
  * This forms handles the basic module configurations.
@@ -37,25 +38,62 @@ class BasicSettingsForm extends FormBase {
       '#required' => TRUE,
     ];
 
-    $form['zendesk_api_token'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Zendesk API Token'),
-      '#default_value' => $config->get('zendesk_api_token'),
-      '#description' => $this->t('API Token, copy from the zendesk dashboard under api settings.'),
+    $form['authentication_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Authentication type'),
+      '#options' => [
+        Auth::BASIC => 'Basic (Email & API token)',
+        Auth::OAUTH => 'OAuth',
+      ],
+      '#default_value' => $config->get('authentication_type'),
+      '#description' => $this->t('What authentication method to use to connect with Zendesk'),
       '#required' => TRUE,
     ];
 
-    $form['zendesk_admin_email'] = [
+    $form['basic'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Basic'),
+      '#states' => [
+        'visible' => [
+          ':input[name="authentication_type"]' => ['value' => Auth::BASIC],
+        ],
+      ],
+    ];
+
+    $form['basic']['api_token'] = [
       '#type' => 'textfield',
-      '#title' => t('Zendesk Admin Email'),
+      '#title' => $this->t('API Token'),
+      '#default_value' => $config->get('zendesk_api_token'),
+      '#description' => $this->t('API Token, copy from the zendesk dashboard under api settings.'),
+      '#required' => FALSE,
+      '#states' => [
+        'required' => [
+          ':input[name="authentication_type"]' => ['value' => Auth::BASIC],
+        ],
+      ],
+    ];
+
+    $form['basic']['admin_email'] = [
+      '#type' => 'textfield',
+      '#title' => t('Admin email'),
       '#default_value' => $config->get('zendesk_admin_email'),
       '#description' => t('An admin email to create zendesk users on registration'),
-      '#required' => TRUE,
+      '#required' => FALSE,
+      '#states' => [
+        'required' => [
+          ':input[name="authentication_type"]' => ['value' => Auth::BASIC],
+        ],
+      ],
     ];
 
     $form['oauth'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('OAuth'),
+      '#states' => [
+        'visible' => [
+          ':input[name="authentication_type"]' => ['value' => Auth::OAUTH],
+        ],
+      ],
     ];
 
     $form['oauth']['oauth_client_id'] = [
@@ -63,7 +101,12 @@ class BasicSettingsForm extends FormBase {
       '#title' => $this->t('Client id'),
       '#default_value' => $config->get('oauth.client_id'),
       '#description' => $this->t('OAuth client id - copy from the zendesk dashboard.'),
-      '#required' => TRUE,
+      '#required' => FALSE,
+      '#states' => [
+        'required' => [
+          ':input[name="authentication_type"]' => ['value' => Auth::OAUTH],
+        ],
+      ],
     ];
 
     $form['oauth']['oauth_client_secret'] = [
@@ -71,7 +114,12 @@ class BasicSettingsForm extends FormBase {
       '#title' => $this->t('Client secret'),
       '#default_value' => $config->get('oauth.client_secret'),
       '#description' => $this->t('OAuth client secret - copy from the zendesk dashboard.'),
-      '#required' => TRUE,
+      '#required' => FALSE,
+      '#states' => [
+        'required' => [
+          ':input[name="authentication_type"]' => ['value' => Auth::OAUTH],
+        ],
+      ],
     ];
 
     $form['actions']['#type'] = 'actions';
@@ -100,8 +148,8 @@ class BasicSettingsForm extends FormBase {
       $form_state->setErrorByName('zendesk_domain', $this->t('Please only use the sub-domain; remove ".zendesk.com" from the end.'));
     }
 
-    if (empty($form_state->getValue('zendesk_api_token'))) {
-      $form_state->setErrorByName('zendesk_api_token', $this->t('Please enter your Zendesk API token'));
+    if (empty($form_state->getValue('api_token'))) {
+      $form_state->setErrorByName('api_token', $this->t('Please enter your Zendesk API token'));
     }
   }
 
@@ -126,8 +174,9 @@ class BasicSettingsForm extends FormBase {
     $config = \Drupal::service('config.factory')->getEditable('zendesk_connect.settings');
     $config
       ->set('zendesk_domain', $form_state->getValue('zendesk_domain'))
-      ->set('zendesk_api_token', $form_state->getValue('zendesk_api_token'))
-      ->set('zendesk_admin_email', $form_state->getValue('zendesk_admin_email'))
+      ->set('authentication_type', $form_state->getValue('authentication_type'))
+      ->set('zendesk_api_token', $form_state->getValue('api_token'))
+      ->set('zendesk_admin_email', $form_state->getValue('admin_email'))
       ->set('oauth.client_id', $form_state->getValue('oauth_client_id'))
       ->set('oauth.client_secret', $form_state->getValue('oauth_client_secret'))
       ->save();
