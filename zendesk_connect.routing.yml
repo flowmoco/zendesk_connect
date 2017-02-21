@@ -20,3 +20,10 @@ zendesk_connect.settings:
     _title: 'Zendesk Connect Settings'
   requirements:
     _permission: 'administer site configuration'
+
+zendesk_connect.request_comments:
+  path: '/zendesk/consultations/{id}/comments.json'
+  defaults:
+    _controller: '\Drupal\zendesk_connect\Controller\ZendeskConnectController::requestComments'
+  requirements:
+    _permission: 'access content'

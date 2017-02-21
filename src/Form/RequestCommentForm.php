@@ -71,7 +71,7 @@ class RequestCommentForm extends FormBase {
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Comment'),
+      '#value' => $this->t('Send'),
       '#button_type' => 'primary',
     ];
     return $form;
