@@ -10,7 +10,6 @@ use Drupal\user\Entity\User;
 use Drupal\user\PrivateTempStore;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Stevenmaguire\OAuth2\Client\Provider\Zendesk as OAuthClient;
-use Stevenmaguire\OAuth2\Client\Provider\ZendeskResourceOwner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -43,7 +42,7 @@ class OAuthController extends ControllerBase {
     $this->tempStore = $tempStore;
   }
 
-  public function beginAuthorization(Request $request) {
+  public function beginAuthorization() {
     // Begin session for anonymous users, so private temp store can be used.
     if ($this->currentUser()->isAnonymous() && !isset($_SESSION['session_started'])) {
       $_SESSION['session_started'] = true;
@@ -103,11 +102,13 @@ class OAuthController extends ControllerBase {
       $this->tempStore->set('oauth.token', $accessToken);
 
       /** @var \Stevenmaguire\OAuth2\Client\Provider\ZendeskResourceOwner $resourceOwner */
-      $resourceOwner = $this->oauthClient->getResourceOwner($accessToken);
-      $user = user_load_by_mail($resourceOwner->getEmail());
+      $resourceOwner = $this->oauthClient->getResourceOwner($accessToken)->toArray();
+      $email = $resourceOwner['user']['email'] ?? NULL;
+
+      $user = user_load_by_mail($email);
 
       if (!$user) {
-        $user = $this->registerFromResourceOwner($resourceOwner);
+        $user = $this->registerFromEmail($email);
       }
 
       $this->login($user);
@@ -117,21 +118,10 @@ class OAuthController extends ControllerBase {
     }
   }
 
-  public static function create(ContainerInterface $container) {
-    /** @var \Stevenmaguire\OAuth2\Client\Provider\Zendesk $oauthClient */
-    $oauthClient = $container->get('zendesk_connect.oauth_client');
-    /** @var \Drupal\Core\Session\SessionManagerInterface $sessionManager */
-    $sessionManager = $container->get('session_manager');
-    /** @var \Drupal\user\PrivateTempStore $tempStore */
-    $tempStore = $container->get('user.private_tempstore')->get('zendesk_connect');
-
-    return new static($oauthClient, $sessionManager, $tempStore);
-  }
-
-  private function registerFromResourceOwner(ZendeskResourceOwner $resourceOwner): User {
+  private function registerFromEmail(string $email): User {
     // @todo Are there other fields we want to add here?
     $user = User::create([
-      'name' => $resourceOwner->getEmail(),
+      'name' => $email,
       'pass' => Crypt::randomBytesBase64(16),
     ]);
 
@@ -143,6 +133,17 @@ class OAuthController extends ControllerBase {
   private function login(User $user) {
     user_login_finalize($user);
     $this->redirect('zendesk_connect.requests');
+  }
+
+  public static function create(ContainerInterface $container) {
+    /** @var \Stevenmaguire\OAuth2\Client\Provider\Zendesk $oauthClient */
+    $oauthClient = $container->get('zendesk_connect.oauth_client');
+    /** @var \Drupal\Core\Session\SessionManagerInterface $sessionManager */
+    $sessionManager = $container->get('session_manager');
+    /** @var \Drupal\user\PrivateTempStore $tempStore */
+    $tempStore = $container->get('user.private_tempstore')->get('zendesk_connect');
+
+    return new static($oauthClient, $sessionManager, $tempStore);
   }
 
 }
