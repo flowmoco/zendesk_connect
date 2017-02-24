@@ -29,5 +29,9 @@ function zendesk_connect_user_insert(\Drupal\user\Entity\User $user) {
     "verified" => TRUE,
   ];
 
-  $client->users()->create($postData);
+  try {
+    $client->users()->create($postData);
+  } catch(Exception $e) {
+    \Drupal::logger('zendesk_connect')->notice('Caught exception: ' . $e->getMessage() . "\n");
+  }
 }
