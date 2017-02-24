@@ -1,3 +1,10 @@
+zendesk_connect.settings:
+  path: '/admin/config/zendesk_connect'
+  defaults:
+    _form: '\Drupal\zendesk_connect\Form\BasicSettingsForm'
+    _title: 'Zendesk Connect Settings'
+  requirements:
+    _permission: 'administer site configuration'
 
 zendesk_connect.requests:
   path: '/zendesk/consultations'
@@ -13,13 +20,12 @@ zendesk_connect.request:
   requirements:
     _permission: 'access content'
 
-zendesk_connect.settings:
-  path: '/admin/config/zendesk_connect'
+zendesk_connect.request_comments:
+  path: '/zendesk/consultations/{id}/comments.json'
   defaults:
-    _form: '\Drupal\zendesk_connect\Form\BasicSettingsForm'
-    _title: 'Zendesk Connect Settings'
+    _controller: '\Drupal\zendesk_connect\Controller\ZendeskConnectController::requestComments'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'access content'
 
 zendesk_connect.oauth.begin:
   path: '/zendesk/oauth/begin'
