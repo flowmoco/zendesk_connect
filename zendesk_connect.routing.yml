@@ -12,6 +12,7 @@ zendesk_connect.requests:
     _controller: '\Drupal\zendesk_connect\Controller\ZendeskConnectController::requests'
   requirements:
     _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
 
 zendesk_connect.request:
   path: '/zendesk/consultations/{id}'
@@ -19,6 +20,7 @@ zendesk_connect.request:
     _controller: '\Drupal\zendesk_connect\Controller\ZendeskConnectController::request'
   requirements:
     _permission: 'access content'
+    _user_is_logged_in: 'TRUE'
 
 zendesk_connect.request_comments:
   path: '/zendesk/consultations/{id}/comments.json'

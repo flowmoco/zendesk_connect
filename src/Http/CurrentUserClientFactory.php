@@ -3,7 +3,9 @@
 namespace Drupal\zendesk_connect\Http;
 
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\zendesk_connect\Exception\ZendeskConnectException;
 use Zendesk\API\HttpClient;
+
 
 class CurrentUserClientFactory {
 
@@ -26,7 +28,12 @@ class CurrentUserClientFactory {
   }
 
   public function get(): HttpClient {
-    return $this->clientFactory->get($this->account->getEmail());
+    if ($this->account->getEmail() !== NULL) {
+      return $this->clientFactory->get($this->account->getEmail());
+    } else {
+      throw new ZendeskConnectException(t('No email found'));
+    }
   }
 
 }
+
