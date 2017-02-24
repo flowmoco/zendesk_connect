@@ -6,7 +6,6 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\zendesk_connect\Form\RequestCommentForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Zendesk\API\HttpClient;
 
 class ZendeskConnectController extends ControllerBase {
@@ -78,7 +77,7 @@ class ZendeskConnectController extends ControllerBase {
   }
 
   public static function create(ContainerInterface $container) {
-    $client = $container->get('zendesk_connect.client.current_user');
+    $client = $container->get('zendesk_connect.client_factory.current_user')->get();
 
     return new static($client);
   }

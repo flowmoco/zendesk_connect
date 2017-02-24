@@ -29,7 +29,7 @@ class RequestCommentForm extends FormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $zendeskClient = $container->get('zendesk_connect.client.current_user');
+    $zendeskClient = $container->get('zendesk_connect.client_factory.current_user')->get();
 
     return new static($zendeskClient);
   }

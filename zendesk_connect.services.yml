@@ -10,15 +10,11 @@ services:
     arguments:
       - '@zendesk_connect.settings'
 
-  zendesk_connect.current_user_client_factory:
+  zendesk_connect.client_factory.current_user:
     class: Drupal\zendesk_connect\Http\CurrentUserClientFactory
     arguments:
       - '@zendesk_connect.client_factory'
       - '@current_user'
-
-  zendesk_connect.client.current_user:
-    class: Zendesk\API\HttpClient
-    factory: ['@zendesk_connect.current_user_client_factory', 'get']
 
   zendesk_connect.oauth_client_factory:
     class: Drupal\zendesk_connect\Http\OauthClientFactory
