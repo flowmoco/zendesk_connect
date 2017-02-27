@@ -6,6 +6,10 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\zendesk_connect\Form\RequestCommentForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Zendesk\API\Exceptions\ApiResponseException;
 use Zendesk\API\HttpClient;
 
 class ZendeskConnectController extends ControllerBase {
@@ -20,7 +24,19 @@ class ZendeskConnectController extends ControllerBase {
   }
 
   public function requests() {
-    $requests = $this->client->requests()->findAll(['sort_by' => 'updated_at', 'sort_order' => 'desc']);
+    try {
+      $requests = $this->client->requests()->findAll(['sort_by' => 'updated_at', 'sort_order' => 'desc']);
+    } catch (ApiResponseException $e) {
+      $statusCode = $e->getCode();
+      if ($statusCode == 401) {
+        drupal_set_message(t('User is not registered in the request system, contact support via email'), 'error');
+        return $this->redirect('user.page');
+      } else if ($statusCode == 403) {
+        throw new AccessDeniedHttpException("You to not have permission to view this content");
+      } else if ($statusCode == 404) {
+        throw new NotFoundHttpException("Content not found");
+      }
+    }
 
     return [
       '#theme' => 'requests',
@@ -39,8 +55,29 @@ class ZendeskConnectController extends ControllerBase {
 
   public function request(int $id) {
     $form = $this->formBuilder()->getForm(RequestCommentForm::class, $id);
-    $request = $this->client->requests($id)->find();
-    $commentsResponse = $this->client->requests($id)->comments()->findAll();
+    try {
+      $request = $this->client->requests($id)->find();
+    } catch (ApiResponseException $e) {
+      $statusCode = $e->getCode();
+      if ($statusCode == 403) {
+        throw new AccessDeniedHttpException("You to not have permission to view this request");
+      } else if ($statusCode == 404) {
+        throw new NotFoundHttpException("No Request found matching that ID");
+      }
+    }
+
+    try {
+      $commentsResponse = $this->client->requests($id)->comments()->findAll();
+    } catch (ApiResponseException $e) {
+      $statusCode = $e->getCode();
+      if ($statusCode == 403) {
+        throw new AccessDeniedHttpException("You to not have permission to view this requests comments");
+      } else if ($statusCode == 404) {
+        throw new NotFoundHttpException("No Request found matching that ID");
+      }
+
+    }
+
     $commentAuthors = [];
     foreach ($commentsResponse->users as $author) {
       $commentAuthors[$author->id] = $author;
