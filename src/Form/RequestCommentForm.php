@@ -54,9 +54,9 @@ class RequestCommentForm extends FormBase {
 
     $form['request_comment_body'] = [
       '#type' => 'textarea',
-      '#title' => $this->t('Comment'),
+      '#title' => $this->t('Type your message here'),
       '#default_value' => '',
-      '#description' => $this->t('Enter a comment'),
+      '#description' => $this->t('Type your message here'),
       '#description_display' => 'invisible',
       '#required' => TRUE,
     ];
