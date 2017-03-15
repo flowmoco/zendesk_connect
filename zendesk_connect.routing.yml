@@ -43,9 +43,9 @@ zendesk_connect.oauth.redirect:
   requirements:
     _user_is_logged_in: 'FALSE'
 
-zendesk_connect.sso:
-  path: '/sso/zendesk'
+zendesk_connect.sso.login:
+  path: '/zendesk/sso/login'
   defaults:
-    _controller: \Drupal\zendesk_connect\Controller\SsoController::zendeskSso
+    _controller: Drupal\zendesk_connect\Controller\SsoController::ssoLogin
   requirements:
     _permission: 'access zendesk sso'

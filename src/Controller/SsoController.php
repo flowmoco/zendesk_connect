@@ -35,14 +35,14 @@ class SsoController extends ControllerBase {
     );
   }
 
-  public function zendeskSso(Request $request) {
+  public function ssoLogin(Request $request) {
     $user = $this->currentUser();
 
     if ($user->isAnonymous()) {
       // Redirect to login/register, then redirect back here
       return $this->redirect('user.login', [], [
         'query' => [
-          'destination' => Url::fromRoute('zendesk_connect.sso')
+          'destination' => Url::fromRoute('zendesk_connect.sso.login')
         ],
       ]);
     }
