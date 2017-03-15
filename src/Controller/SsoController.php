@@ -25,7 +25,7 @@ class SsoController extends ControllerBase {
   private $sharedSecret;
 
   public function __construct(ImmutableConfig $config) {
-    $this->subDomain = $config->get('zendesk_domain');
+    $this->subDomain = $config->get('subdomain');
     $this->sharedSecret = $config->get('sso.shared_secret');
   }
 

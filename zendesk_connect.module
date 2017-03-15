@@ -21,7 +21,7 @@ function zendesk_connect_theme($existing, $type, $theme, $path) {
 
 function zendesk_connect_user_insert(\Drupal\user\Entity\User $user) {
   $config = \Drupal::service('zendesk_connect.settings');
-  $client = \Drupal::service('zendesk_connect.client_factory')->get($config->get('zendesk_admin_email'));
+  $client = \Drupal::service('zendesk_connect.client_factory')->get($config->get('basic.email'));
 
   $postData = [
     'name' => $user->getEmail(),

@@ -10,7 +10,7 @@ class ClientFactory {
   /**
    * @var string
    */
-  private $domain;
+  private $subdomain;
 
   /**
    * @var string
@@ -18,12 +18,12 @@ class ClientFactory {
   private $apiToken;
 
   public function __construct(ImmutableConfig $config) {
-    $this->domain = $config->get('zendesk_domain');
-    $this->apiToken = $config->get('zendesk_api_token');
+    $this->subdomain = $config->get('subdomain');
+    $this->apiToken = $config->get('basic.api_token');
   }
 
   public function get(string $email): ZendeskAPI {
-    $client = new ZendeskAPI($this->domain);
+    $client = new ZendeskAPI($this->subdomain);
     $client->setAuth('basic', [
       'username' => $email,
       'token' => $this->apiToken,

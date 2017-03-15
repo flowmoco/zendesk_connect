@@ -30,10 +30,10 @@ class BasicSettingsForm extends FormBase {
     /** @var \Drupal\Core\Config\ImmutableConfig $config */
     $config = \Drupal::service('config.factory')->get('zendesk_connect.settings');
 
-    $form['zendesk_domain'] = [
+    $form['subdomain'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Zendesk sub-domain'),
-      '#default_value' => $config->get('zendesk_domain'),
+      '#default_value' => $config->get('subdomain'),
       '#description' => $this->t('Your Zendesk sub-domain'),
       '#required' => TRUE,
     ];
@@ -63,7 +63,7 @@ class BasicSettingsForm extends FormBase {
     $form['basic']['api_token'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API Token'),
-      '#default_value' => $config->get('zendesk_api_token'),
+      '#default_value' => $config->get('basic.api_token'),
       '#description' => $this->t('API Token, copy from the zendesk dashboard under api settings.'),
       '#required' => FALSE,
       '#states' => [
@@ -76,7 +76,7 @@ class BasicSettingsForm extends FormBase {
     $form['basic']['admin_email'] = [
       '#type' => 'textfield',
       '#title' => t('Admin email'),
-      '#default_value' => $config->get('zendesk_admin_email'),
+      '#default_value' => $config->get('basic.email'),
       '#description' => t('An admin email to create zendesk users on registration'),
       '#required' => FALSE,
       '#states' => [
@@ -169,16 +169,16 @@ class BasicSettingsForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (empty($form_state->getValue('zendesk_domain'))) {
-      $form_state->setErrorByName('zendesk_domain', $this->t('Please enter your Zendesk domain'));
+    if (empty($form_state->getValue('subdomain'))) {
+      $form_state->setErrorByName('subdomain', $this->t('Please enter your Zendesk domain'));
     }
 
-    if ($this->startsWith($form_state->getValue('zendesk_domain'), 'https://')) {
-      $form_state->setErrorByName('zendesk_domain', $this->t('Please only use the sub-domain; remove the "https://" from the start.'));
+    if ($this->startsWith($form_state->getValue('subdomain'), 'https://')) {
+      $form_state->setErrorByName('subdomain', $this->t('Please only use the sub-domain; remove the "https://" from the start.'));
     }
 
-    if ($this->endsWith($form_state->getValue('zendesk_domain'), '.zendesk.com')) {
-      $form_state->setErrorByName('zendesk_domain', $this->t('Please only use the sub-domain; remove ".zendesk.com" from the end.'));
+    if ($this->endsWith($form_state->getValue('subdomain'), '.zendesk.com')) {
+      $form_state->setErrorByName('subdomain', $this->t('Please only use the sub-domain; remove ".zendesk.com" from the end.'));
     }
 
     if (empty($form_state->getValue('api_token'))) {
@@ -206,10 +206,10 @@ class BasicSettingsForm extends FormBase {
     /** @var \Drupal\Core\Config\Config $config */
     $config = \Drupal::service('config.factory')->getEditable('zendesk_connect.settings');
     $config
-      ->set('zendesk_domain', $form_state->getValue('zendesk_domain'))
+      ->set('subdomain', $form_state->getValue('subdomain'))
       ->set('authentication_type', $form_state->getValue('authentication_type'))
-      ->set('zendesk_api_token', $form_state->getValue('api_token'))
-      ->set('zendesk_admin_email', $form_state->getValue('admin_email'))
+      ->set('basic.api_token', $form_state->getValue('api_token'))
+      ->set('basic.email', $form_state->getValue('admin_email'))
       ->set('oauth.client_id', $form_state->getValue('oauth_client_id'))
       ->set('oauth.client_secret', $form_state->getValue('oauth_client_secret'))
       ->set('sso.enabled', $form_state->getValue('sso_enabled'))
