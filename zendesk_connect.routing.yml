@@ -42,3 +42,10 @@ zendesk_connect.oauth.redirect:
     _controller: 'Drupal\zendesk_connect\Controller\OAuthController::redirectEndpoint'
   requirements:
     _user_is_logged_in: 'FALSE'
+
+zendesk_connect.sso:
+  path: '/sso/zendesk'
+  defaults:
+    _controller: \Drupal\zendesk_connect\Controller\SsoController::zendeskSso
+  requirements:
+    _permission: 'access zendesk sso'

@@ -1,0 +1,3 @@
+access zendesk sso:
+  title: 'Access Zendesk SSO endpoint'
+  description: 'Allows users to login to Zendesk via SSO, keeping login details within the Drupal site'
