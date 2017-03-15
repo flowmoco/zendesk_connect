@@ -3,4 +3,5 @@ type: 'module'
 description: 'Connect to zendesk api'
 package: 'Custom'
 core: '8.x'
+dependencies:
   - simple_oauth
