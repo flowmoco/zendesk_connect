@@ -122,6 +122,39 @@ class BasicSettingsForm extends FormBase {
       ],
     ];
 
+    $form['sso_enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable single sign on'),
+      '#default_value' => (bool) $config->get('sso.enabled'),
+      '#description' => $this->t('Exposes an endpoint to provide Zendesk with a JWT SSO endpoint to use with this site. Users trying to login to Zendesk are redirected to this site & authenticated here.'),
+      '#required' => FALSE,
+    ];
+
+    $form['sso'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Single Sign On'),
+      '#collapsible' => TRUE,
+      '#collapsed' => (bool) $config->get('sso.enabled'),
+      '#states' => [
+        'visible' => [
+          ':input[name="sso_enabled"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $form['sso']['shared_secret'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Shared secret'),
+      '#default_value' => $config->get('sso.shared_secret'),
+      '#description' => $this->t('Shared secret - generated in Zendesk when configuring JWT SSO.'),
+      '#required' => FALSE,
+      '#states' => [
+        'required' => [
+          ':input[name="sso_enabled"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = [
       '#type' => 'submit',
@@ -179,6 +212,8 @@ class BasicSettingsForm extends FormBase {
       ->set('zendesk_admin_email', $form_state->getValue('admin_email'))
       ->set('oauth.client_id', $form_state->getValue('oauth_client_id'))
       ->set('oauth.client_secret', $form_state->getValue('oauth_client_secret'))
+      ->set('sso.enabled', $form_state->getValue('sso_enabled'))
+      ->set('sso.shared_secret', $form_state->getValue('shared_secret'))
       ->save();
   }
 
