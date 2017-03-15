@@ -6,7 +6,6 @@ use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Routing\TrustedRedirectResponse;
-use Drupal\Core\Url;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -42,7 +41,7 @@ class SsoController extends ControllerBase {
       // Redirect to login/register, then redirect back here
       return $this->redirect('user.login', [], [
         'query' => [
-          'destination' => Url::fromRoute('zendesk_connect.sso.login')
+          'destination' => $request->getRequestUri(),
         ],
       ]);
     }
@@ -78,7 +77,7 @@ class SsoController extends ControllerBase {
 
     $query = http_build_query($parameters);
 
-    return "https://{$this->subDomain}.zendesk.com/access/jwt{$query}";
+    return "https://{$this->subDomain}.zendesk.com/access/jwt?{$query}";
   }
 
 }
