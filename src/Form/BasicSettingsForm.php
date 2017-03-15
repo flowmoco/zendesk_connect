@@ -180,10 +180,6 @@ class BasicSettingsForm extends FormBase {
     if ($this->endsWith($form_state->getValue('subdomain'), '.zendesk.com')) {
       $form_state->setErrorByName('subdomain', $this->t('Please only use the sub-domain; remove ".zendesk.com" from the end.'));
     }
-
-    if (empty($form_state->getValue('api_token'))) {
-      $form_state->setErrorByName('api_token', $this->t('Please enter your Zendesk API token'));
-    }
   }
 
   private function startsWith($haystack, $needle) {
