@@ -11,6 +11,7 @@ use Drupal\user\PrivateTempStore;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Stevenmaguire\OAuth2\Client\Provider\Zendesk as OAuthClient;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -101,17 +102,26 @@ class OAuthController extends ControllerBase {
 
       $this->tempStore->set('oauth.token', $accessToken);
 
+      // Handle case where we are already logged in to Drupal, e.g. via SSO.
+      if ($this->currentUser()->isAuthenticated()) {
+        return $this->redirect('<front>')
+          ->setMaxAge(0)
+          ->setSharedMaxAge(0)
+          ->setPrivate();
+      }
+
       /** @var \Stevenmaguire\OAuth2\Client\Provider\ZendeskResourceOwner $resourceOwner */
       $resourceOwner = $this->oauthClient->getResourceOwner($accessToken)->toArray();
       $email = $resourceOwner['user']['email'] ?? NULL;
-
       $user = user_load_by_mail($email);
 
       if (!$user) {
+        // @todo We should lock the ability to register accounts automatically
+        // behind a setting or permission.
         $user = $this->registerFromEmail($email);
       }
 
-      $this->login($user);
+      return $this->login($user);
     } catch (IdentityProviderException $e) {
       // @todo Handle failure retrieving OAuth token/resource owner.
       // Redirect to journey start with error message?
@@ -130,9 +140,12 @@ class OAuthController extends ControllerBase {
     return $user;
   }
 
-  private function login(User $user) {
+  private function login(User $user): RedirectResponse {
     user_login_finalize($user);
-    $this->redirect('zendesk_connect.requests');
+    return $this->redirect('zendesk_connect.requests')
+      ->setMaxAge(0)
+      ->setSharedMaxAge(0)
+      ->setPrivate();
   }
 
   public static function create(ContainerInterface $container) {

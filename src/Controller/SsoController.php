@@ -3,7 +3,7 @@
 namespace Drupal\zendesk_connect\Controller;
 
 use Drupal\Component\Utility\Crypt;
-use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Lcobucci\JWT\Builder;
@@ -16,21 +16,22 @@ class SsoController extends ControllerBase {
   /**
    * @var string
    */
-  private $subDomain;
+  private $subdomain;
 
   /**
    * @var string
    */
   private $sharedSecret;
 
-  public function __construct(ImmutableConfig $config) {
-    $this->subDomain = $config->get('subdomain');
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    $config = $configFactory->get('zendesk_connect.settings');
+    $this->subdomain = $config->get('subdomain');
     $this->sharedSecret = $config->get('sso.shared_secret');
   }
 
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('zendesk_connect.settings')
+      $container->get('config.factory')
     );
   }
 
@@ -43,7 +44,10 @@ class SsoController extends ControllerBase {
         'query' => [
           'destination' => $request->getRequestUri(),
         ],
-      ]);
+      ])
+        ->setMaxAge(0)
+        ->setSharedMaxAge(0)
+        ->setPrivate();
     }
 
     $now = time();
@@ -51,7 +55,7 @@ class SsoController extends ControllerBase {
     $hash = Crypt::hashBase64("{$user->id()}:{$now}:{$random}");
 
     $token = (new Builder())
-      ->setAudience("https://{$this->subDomain}.zendesk.com")
+      ->setAudience("https://{$this->subdomain}.zendesk.com")
       ->setId($hash)
       ->setIssuedAt($now)
       ->setNotBefore($now)
@@ -65,7 +69,10 @@ class SsoController extends ControllerBase {
       ->sign(new Sha256(), $this->sharedSecret)
       ->getToken();
 
-    return TrustedRedirectResponse::create($this->getEndpoint($token, $request->query->get('return_to')));
+    return TrustedRedirectResponse::create($this->getEndpoint($token, $request->query->get('return_to')))
+      ->setMaxAge(0)
+      ->setSharedMaxAge(0)
+      ->setPrivate();
   }
 
   private function getEndpoint(string $token, string $returnTo = ''): string {
@@ -77,7 +84,7 @@ class SsoController extends ControllerBase {
 
     $query = http_build_query($parameters);
 
-    return "https://{$this->subDomain}.zendesk.com/access/jwt?{$query}";
+    return "https://{$this->subdomain}.zendesk.com/access/jwt?{$query}";
   }
 
 }
