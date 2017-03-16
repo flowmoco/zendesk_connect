@@ -34,18 +34,18 @@ zendesk_connect.oauth.begin:
   defaults:
     _controller: 'Drupal\zendesk_connect\Controller\OAuthController::beginAuthorization'
   requirements:
-    _access: 'TRUE'
+    _zendesk_connect_oauth_access: 'TRUE'
 
 zendesk_connect.oauth.redirect:
   path: '/zendesk/oauth/redirect'
   defaults:
     _controller: 'Drupal\zendesk_connect\Controller\OAuthController::redirectEndpoint'
   requirements:
-    _access: 'TRUE'
+    _zendesk_connect_oauth_access: 'TRUE'
 
 zendesk_connect.sso.login:
   path: '/zendesk/sso/login'
   defaults:
     _controller: Drupal\zendesk_connect\Controller\SsoController::ssoLogin
   requirements:
-    _permission: 'access zendesk sso'
+    _zendesk_connect_sso_access: 'TRUE'

@@ -24,3 +24,15 @@ services:
   zendesk_connect.oauth_client:
     class: Stevenmaguire\OAuth2\Client\Provider\Zendesk
     factory: ['@zendesk_connect.oauth_client_factory', 'get']
+
+  zendesk_connect.access_check.oauth:
+    class: Drupal\zendesk_connect\Access\OAuthAccessCheck
+    arguments: ['@zendesk_connect.settings']
+    tags:
+      - { name: access_check, applies_to: _zendesk_connect_oauth_access }
+
+  zendesk_connect.access_check.sso:
+    class: Drupal\zendesk_connect\Access\SsoAccessCheck
+    arguments: ['@zendesk_connect.settings']
+    tags:
+      - { name: access_check, applies_to: _zendesk_connect_sso_access }
