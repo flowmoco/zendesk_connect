@@ -115,6 +115,19 @@ class BasicSettingsForm extends FormBase {
       ],
     ];
 
+    $form['oauth']['auto_register_users'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable automatic user registration'),
+      '#default_value' => (bool) $config->get('oauth.auto_register_users'),
+      '#description' => $this->t('Users will be registered automatically in Drupal if an account with their email does not already exist.'),
+      '#required' => FALSE,
+      '#states' => [
+        'required' => [
+          ':input[name="authentication_type"]' => ['value' => Auth::OAUTH],
+        ],
+      ],
+    ];
+
     $form['sso_enabled'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable single sign on'),
@@ -193,6 +206,7 @@ class BasicSettingsForm extends FormBase {
       ->set('basic.email', $form_state->getValue('admin_email'))
       ->set('oauth.client_id', $form_state->getValue('oauth_client_id'))
       ->set('oauth.client_secret', $form_state->getValue('oauth_client_secret'))
+      ->set('oauth.auto_register_users', $form_state->getValue('auto_register_users'))
       ->set('sso.enabled', $form_state->getValue('sso_enabled'))
       ->set('sso.shared_secret', $form_state->getValue('shared_secret'))
       ->save();

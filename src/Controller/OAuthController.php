@@ -110,15 +110,16 @@ class OAuthController extends ControllerBase {
           ->setPrivate();
       }
 
-      /** @var \Stevenmaguire\OAuth2\Client\Provider\ZendeskResourceOwner $resourceOwner */
       $resourceOwner = $this->oauthClient->getResourceOwner($accessToken)->toArray();
       $email = $resourceOwner['user']['email'] ?? NULL;
       $user = user_load_by_mail($email);
 
       if (!$user) {
-        // @todo We should lock the ability to register accounts automatically
-        // behind a setting or permission.
-        $user = $this->registerFromEmail($email);
+        if ($this->configFactory->get('zendesk_connect.settings')->get('auto_register_users')) {
+          $user = $this->registerFromEmail($email);
+        } else {
+          throw new AccessDeniedHttpException("Cannot load user associated with email '{$email}'");
+        }
       }
 
       return $this->login($user);
