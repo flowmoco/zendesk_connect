@@ -69,7 +69,9 @@ class SsoController extends ControllerBase {
       ->sign(new Sha256(), $this->sharedSecret)
       ->getToken();
 
-    return TrustedRedirectResponse::create($this->getEndpoint($token, $request->query->get('return_to')))
+    $returnTo = $request->query->get('return_to') ?: '';
+
+    return TrustedRedirectResponse::create($this->getEndpoint($token, $returnTo))
       ->setMaxAge(0)
       ->setSharedMaxAge(0)
       ->setPrivate();
