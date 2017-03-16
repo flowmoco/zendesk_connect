@@ -121,11 +121,6 @@ class BasicSettingsForm extends FormBase {
       '#default_value' => (bool) $config->get('oauth.auto_register_users'),
       '#description' => $this->t('Users will be registered automatically in Drupal if an account with their email does not already exist.'),
       '#required' => FALSE,
-      '#states' => [
-        'required' => [
-          ':input[name="authentication_type"]' => ['value' => Auth::OAUTH],
-        ],
-      ],
     ];
 
     $form['sso_enabled'] = [
