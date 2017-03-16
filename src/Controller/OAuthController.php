@@ -81,7 +81,10 @@ class OAuthController extends ControllerBase {
    * @return \Drupal\Core\Routing\TrustedRedirectResponse
    */
   public function getAuthorizationRedirect(string $url, OAuthClient $client) {
-    return new TrustedRedirectResponse($url);
+    return TrustedRedirectResponse::create($url)
+      ->setMaxAge(0)
+      ->setSharedMaxAge(0)
+      ->setPrivate();
   }
 
   public function redirectEndpoint(Request $request) {
