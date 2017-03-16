@@ -16,19 +16,12 @@ use Zendesk\API\Utilities\Auth;
  */
 class BasicSettingsForm extends FormBase {
 
-  /**
-   * {@inheritdoc}
-   */
   public function getFormId() {
     return 'zendesk_connect_basic_settings_form';
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\Core\Config\ImmutableConfig $config */
-    $config = \Drupal::service('config.factory')->get('zendesk_connect.settings');
+    $config = $this->configFactory()->get('zendesk_connect.settings');
 
     $form['subdomain'] = [
       '#type' => 'textfield',
@@ -165,9 +158,6 @@ class BasicSettingsForm extends FormBase {
     return $form;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     if (empty($form_state->getValue('subdomain'))) {
       $form_state->setErrorByName('subdomain', $this->t('Please enter your Zendesk domain'));
@@ -195,13 +185,8 @@ class BasicSettingsForm extends FormBase {
     return (substr($haystack, -$length) === $needle);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    /** @var \Drupal\Core\Config\Config $config */
-    $config = \Drupal::service('config.factory')->getEditable('zendesk_connect.settings');
-    $config
+    $this->configFactory()->getEditable('zendesk_connect.settings')
       ->set('subdomain', $form_state->getValue('subdomain'))
       ->set('authentication_type', $form_state->getValue('authentication_type'))
       ->set('basic.api_token', $form_state->getValue('api_token'))
