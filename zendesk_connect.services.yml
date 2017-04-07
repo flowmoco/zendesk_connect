@@ -5,10 +5,16 @@ services:
     factory: ['@config.factory', 'get']
     arguments: ['zendesk_connect.settings']
 
+  zendesk_connect.private_tempstore:
+    class: Drupal\user\PrivateTempStore
+    factory: ['@user.private_tempstore', 'get']
+    arguments: ['zendesk_connect']
+
   zendesk_connect.client_factory:
     class: Drupal\zendesk_connect\Http\ClientFactory
     arguments:
       - '@zendesk_connect.settings'
+      - '@zendesk_connect.private_tempstore'
 
   zendesk_connect.client_factory.current_user:
     class: Drupal\zendesk_connect\Http\CurrentUserClientFactory
