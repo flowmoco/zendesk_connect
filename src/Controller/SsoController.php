@@ -69,6 +69,8 @@ class SsoController extends ControllerBase {
       ->sign(new Sha256(), $this->sharedSecret)
       ->getToken();
 
+    // @todo Zendesk sends this & uses it to redirect - do we need to verify it,
+    // or assume Zendesk does that on their end?
     $returnTo = $request->query->get('return_to') ?: '';
 
     return TrustedRedirectResponse::create($this->getEndpoint($token, $returnTo))
